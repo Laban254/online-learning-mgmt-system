@@ -1,2 +1,2 @@
-# online-learning-mgmt-system
-online-learning-mgmt-system
+## Online Learning Management System (LMS) - Django REST Framework
+A Django-based Learning Management System (LMS) with role-based access, course management, user enrollments, assessments, discussion forums, and analytics.
