@@ -10,7 +10,7 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 class EnrollmentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'course', 'created_at')
+    list_display = ('user', 'course', 'enrolled_at') 
     list_filter = ('course',)
 
 class NotificationAdmin(admin.ModelAdmin):
