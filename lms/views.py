@@ -17,6 +17,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -62,38 +64,46 @@ class Login(APIView):
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class CategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
 
 # Course 
 class CourseListCreateView(generics.ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class CourseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 # Course 
 class CourseMaterialListCreateView(generics.ListCreateAPIView):
     queryset = CourseMaterial.objects.all()
     serializer_class = CourseMaterialSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class CourseMaterialRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CourseMaterial.objects.all()
     serializer_class = CourseMaterialSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class EnrollmentListCreateView(generics.ListCreateAPIView):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -104,6 +114,7 @@ class EnrollmentListCreateView(generics.ListCreateAPIView):
 
 class EnrollmentRetrieveView(generics.ListAPIView):
     serializer_class = EnrollmentSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -115,6 +126,7 @@ class EnrollmentRetrieveView(generics.ListAPIView):
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 class PaymentView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -133,58 +145,69 @@ class PaymentView(APIView):
 class QuizListCreateView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
 class QuizRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
 class QuestionListCreateView(generics.ListCreateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
 class QuestionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class ThreadListCreateView(generics.ListCreateAPIView):
     queryset = Thread.objects.all()
     serializer_class = ThreadSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class ThreadRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Thread.objects.all()
     serializer_class = ThreadSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
 class ReplyListCreateView(generics.ListCreateAPIView):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class ReplyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class ProgressListCreateView(generics.ListCreateAPIView):
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class ProgressRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 class GenerateCertificateView(generics.GenericAPIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, course_id):
@@ -203,6 +226,7 @@ class GenerateCertificateView(generics.GenericAPIView):
 class NotificationListView(generics.ListAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -210,6 +234,7 @@ class NotificationListView(generics.ListAPIView):
         return self.queryset.filter(user=self.request.user)
     
 class AdminDashboardView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAdminUser]
 
     def get(self, request):
