@@ -10,12 +10,53 @@ from django.http import FileResponse
 from .certificate_generator import generate_certificate
 from .tasks import send_notification
 from .models import CustomUser
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import authenticate
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
+
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = CustomUser.objects.all() 
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
+
+class Login(APIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = LoginSerializer
+
+    @swagger_auto_schema(request_body=LoginSerializer)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+
+    
+            user_data = {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,  
+            }
+
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': user_data,  
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'error': 'Invalid username or password'
+            }, status=status.HTTP_401_UNAUTHORIZED)
     
 # Category 
 class CategoryListCreateView(generics.ListCreateAPIView):
