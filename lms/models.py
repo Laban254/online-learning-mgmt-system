@@ -1,33 +1,35 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.contrib.auth import get_user_model
 
-class Profile(models.Model):
+
+class CustomUser(AbstractUser):
+    ROLE_ADMIN = 'Admin'
+    ROLE_INSTRUCTOR = 'Instructor'
+    ROLE_STUDENT = 'Student'
+
     ROLE_CHOICES = [
-        ('Admin', 'Admin'),
-        ('Instructor', 'Instructor'),
-        ('Student', 'Student'),
+        (ROLE_ADMIN, 'Admin'),
+        (ROLE_INSTRUCTOR, 'Instructor'),
+        (ROLE_STUDENT, 'Student'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(
+        max_length=10,
+        choices=ROLE_CHOICES,
+        default=ROLE_STUDENT,  
+        blank=False,          
+        null=False       
+    )
 
     def __str__(self):
-        return f"{self.user.username} - {self.role}"
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
+        return self.username
+    
+User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=255)

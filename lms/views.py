@@ -1,5 +1,4 @@
 from rest_framework import generics, permissions
-from .models import Profile
 from .serializers import *
 from django.contrib.auth.models import User
 import stripe
@@ -10,21 +9,15 @@ from rest_framework import status
 from django.http import FileResponse
 from .certificate_generator import generate_certificate
 from .tasks import send_notification
+from .models import CustomUser
 
 class UserRegistrationView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all() 
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
-class ProfileView(generics.RetrieveUpdateAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user.profile
     
-# Category CRUD operations
+# Category 
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -35,7 +28,7 @@ class CategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
-# Course CRUD operations
+# Course 
 class CourseListCreateView(generics.ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -46,7 +39,7 @@ class CourseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-# Course Material CRUD operations
+# Course 
 class CourseMaterialListCreateView(generics.ListCreateAPIView):
     queryset = CourseMaterial.objects.all()
     serializer_class = CourseMaterialSerializer
@@ -107,7 +100,7 @@ class QuizRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = QuizSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-# Question Views
+
 class QuestionListCreateView(generics.ListCreateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
@@ -129,7 +122,7 @@ class ThreadRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ThreadSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-# Reply Views
+
 class ReplyListCreateView(generics.ListCreateAPIView):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer

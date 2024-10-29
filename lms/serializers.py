@@ -2,22 +2,29 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import *
 
+from django.contrib.auth.models import User
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'password']
+        model = CustomUser
+        fields = ('username', 'email', 'password') 
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User(**validated_data)
-        user.set_password(validated_data['password'])
+        if CustomUser.objects.filter(username=validated_data['username']).exists():
+            raise ValidationError({"username": "This username is already taken."})
+        if CustomUser.objects.filter(email=validated_data['email']).exists():
+            raise ValidationError({"email": "This email is already in use."})
+
+        user = CustomUser(**validated_data)
+        user.set_password(validated_data['password']) 
         user.save()
+
         return user
 
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ['user', 'role']
+
 
 
 class CategorySerializer(serializers.ModelSerializer):
