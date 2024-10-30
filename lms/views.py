@@ -19,7 +19,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from .permissions import IsAdmin,  IsInstructor, IsStudent
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = CustomUser.objects.all() 
@@ -65,13 +65,16 @@ class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsInstructor | IsAdmin] 
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 class CategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsInstructor | IsAdmin]
     
 
 # Course 
@@ -93,6 +96,9 @@ class CourseMaterialListCreateView(generics.ListCreateAPIView):
     serializer_class = CourseMaterialSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 class CourseMaterialRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CourseMaterial.objects.all()

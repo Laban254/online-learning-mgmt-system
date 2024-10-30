@@ -33,6 +33,7 @@ User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories_created')
 
     def __str__(self):
         return self.name

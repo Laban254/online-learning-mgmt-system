@@ -32,7 +32,8 @@ class LoginSerializer(serializers.Serializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id', 'name', 'created_by']  
+        read_only_fields = ['created_by']
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
